@@ -1,5 +1,4 @@
 // Components/Layout/PrivateLayout.tsx
-
 import { Outlet } from "react-router-dom";
 import Sidebar from "../SideBar/SideBar";
 import Header from "../Header"; // <- Make sure this path is correct
