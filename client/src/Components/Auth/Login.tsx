@@ -13,6 +13,8 @@ export default function Login() {
   const [form, setForm] = useState<LoginForm>({ email: '', password: '' });
   const navigate =useNavigate();
 
+ const API_URL = import.meta.env.VITE_API_URL;
+
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -20,7 +22,7 @@ export default function Login() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/login', form);
+      const res = await axios.post(`${API_URL}/api/auth/login`, form);
       localStorage.setItem('token', res.data.token);
       alert('Login successful!');
         navigate('/Dashboard'); 
