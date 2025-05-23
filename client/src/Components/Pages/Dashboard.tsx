@@ -1,22 +1,78 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+
+interface Task {
+  _id: string;
+  name: string;
+  category: string;
+  due_date: string; // ISO format
+  status: string;
+}
+
+// Helper to extract YYYY-MM-DD from ISO datetime
+const extractDate = (iso: string) => iso.split('T')[0];
 
 export default function Dashboard() {
   const navigate = useNavigate();
+  const [tasks, setTasks] = useState<Task[]>([]);
 
-  // Redirect to login if no token found
+  const today = new Date().toISOString().split('T')[0];
+  const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+    .toISOString()
+    .split('T')[0];
+
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
       navigate('/auth');
+      return;
     }
+    fetchTasks(token);
   }, [navigate]);
+
+  const fetchTasks = async (token: string) => {
+    try {
+      const res = await axios.get<Task[]>('http://localhost:5000/api/tasks', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setTasks(res.data);
+    } catch (error) {
+      console.error('Error fetching tasks:', error);
+    }
+  };
 
   const handleLogout = () => {
     localStorage.removeItem('token');
     navigate('/Login');
   };
 
+  // Filtered task groups
+  const tasksDueToday = tasks.filter(
+    (task) => extractDate(task.due_date) === today
+  );
+  const upcomingTasks = tasks.filter(
+    (task) => extractDate(task.due_date) > today
+  );
+  const completedLast7Days = tasks.filter((task) => {
+    const due = extractDate(task.due_date);
+    return (
+      task.status === 'completed' && due >= sevenDaysAgo && due <= today
+    );
+  });
+
+  // Category Count Logic
+  const categoryCounts: Record<string, number> = {};
+  tasks.forEach((task) => {
+    if (task.category) {
+      categoryCounts[task.category] = (categoryCounts[task.category] || 0) + 1;
+    }
+  });
+  const sortedCategories = Object.entries(categoryCounts).sort(
+    (a, b) => b[1] - a[1]
+  );
+
+  // UI Component
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       {/* Header */}
@@ -30,35 +86,67 @@ export default function Dashboard() {
         </button>
       </header>
 
-      {/* Content Grid */}
+      {/* Dashboard Content Grid */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {/* Tasks Due Today */}
-        <section className="bg-white p-4 rounded shadow">
-          <h2 className="text-xl font-semibold mb-2">Tasks Due Today</h2>
-          <p className="text-gray-600">No tasks due today. (Add tasks to see them here)</p>
-        </section>
+        <DashboardSection
+          title="Tasks Due Today"
+          items={tasksDueToday.map((t) => t.name)}
+          emptyMessage="No tasks due today."
+        />
 
-        {/* Tasks Completed (Last 7 Days) */}
-        <section className="bg-white p-4 rounded shadow">
-          <h2 className="text-xl font-semibold mb-2">Tasks Completed (Last 7 Days)</h2>
-          {/* Placeholder for graph */}
-          <div className="h-40 bg-gray-200 rounded flex items-center justify-center text-gray-500">
-            Graph Placeholder
-          </div>
-        </section>
+        <DashboardSection
+          title="Tasks Completed (Last 7 Days)"
+          items={completedLast7Days.map((t) => `${t.name} — ${extractDate(t.due_date)}`)}
+          emptyMessage="No tasks completed in the last 7 days."
+        />
 
-        {/* Upcoming Tasks */}
-        <section className="bg-white p-4 rounded shadow">
-          <h2 className="text-xl font-semibold mb-2">Upcoming Tasks</h2>
-          <p className="text-gray-600">No upcoming tasks. (Add tasks to see them here)</p>
-        </section>
+        <DashboardSection
+          title="Upcoming Tasks"
+          items={upcomingTasks.map((t) => `${t.name} — due ${extractDate(t.due_date)}`)}
+          emptyMessage="No upcoming tasks."
+        />
 
-        {/* Most Popular Task Categories */}
         <section className="bg-white p-4 rounded shadow md:col-span-2 lg:col-span-1">
           <h2 className="text-xl font-semibold mb-2">Most Popular Task Categories</h2>
-          <p className="text-gray-600">No categories yet. (Add tasks with categories)</p>
+          {sortedCategories.length === 0 ? (
+            <p className="text-gray-600">No categories yet.</p>
+          ) : (
+            <ul className="text-gray-800 list-disc pl-4">
+              {sortedCategories.map(([category, count]) => (
+                <li key={category}>
+                  {category} – {count} task{count > 1 ? 's' : ''}
+                </li>
+              ))}
+            </ul>
+          )}
         </section>
       </div>
     </div>
+  );
+}
+
+// Reusable Section Component
+function DashboardSection({
+  title,
+  items,
+  emptyMessage,
+}: {
+  title: string;
+  items: string[];
+  emptyMessage: string;
+}) {
+  return (
+    <section className="bg-white p-4 rounded shadow">
+      <h2 className="text-xl font-semibold mb-2">{title}</h2>
+      {items.length === 0 ? (
+        <p className="text-gray-600">{emptyMessage}</p>
+      ) : (
+        <ul className="text-gray-800 list-disc pl-4">
+          {items.map((item, idx) => (
+            <li key={idx}>{item}</li>
+          ))}
+        </ul>
+      )}
+    </section>
   );
 }

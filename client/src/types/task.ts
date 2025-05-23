@@ -1,6 +1,6 @@
 // ✅ This defines and exports the Task interface
 export interface Task {
-  _id: string;
+  id: string;
   name: string;
   description: string;
   category: string;

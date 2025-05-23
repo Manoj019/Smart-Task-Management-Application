@@ -22,7 +22,7 @@ export default function SignUp() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      const res = await axios.post('https://smarttask.duckdns.org/api/auth/register', form);
+      const res = await axios.post('http://localhost:5000/api/auth/register', form);
       localStorage.setItem('token', res.data.token);
       alert('Registration successful!');
       navigate('/login');  // redirect to login page here

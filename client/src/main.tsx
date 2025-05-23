@@ -9,6 +9,7 @@ import MainPage from "./Components/Pages/MainPage";
 import Dashboard from "./Components/Pages/Dashboard";
 import PrivateLayout from "./Components/Layout/PrivateLayout";
 import TasksPage from "./Components/Pages/TaskPage";
+import AnalyticsPage from "./Components/Pages/AnalyticsPage";
 
 // You can add other pages: Tasks, Analytics, etc.
 
@@ -53,6 +54,7 @@ if (root) {
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="NewTask" element={<NewTaskWrapper />} />
           <Route path="tasks" element={<TasksPage />} />
+          <Route path="analytics" element={<AnalyticsPage />} />
         </Route>
       </Routes>
     </BrowserRouter>
