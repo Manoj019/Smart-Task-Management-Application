@@ -13,7 +13,7 @@ export default function SignUp() {
   const [form, setForm] = useState<SignupForm>({ name: '', email: '', password: '' });
   const navigate = useNavigate(); // get navigate function
 
-const API_URL = import.meta.env.VITE_API_URL;
+
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -22,7 +22,7 @@ const API_URL = import.meta.env.VITE_API_URL;
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      const res = await axios.post(`${API_URL}/api/auth/register`, form);
+      const res = await axios.post('https://smarttask.duckdns.org/api/auth/register', form);
       localStorage.setItem('token', res.data.token);
       alert('Registration successful!');
       navigate('/login');  // redirect to login page here
