@@ -16,6 +16,7 @@ const PORT = process.env.PORT || 5000;
 
 
 const allowedOrigins = [
+  'http://18.212.67.76',
   'https://smarttask.duckdns.org', // Production frontend
   'http://localhost:5173',     
   'http://localhost:3000',    // Local development
