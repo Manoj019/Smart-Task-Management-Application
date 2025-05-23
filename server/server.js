@@ -16,7 +16,7 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors({
-  origin: 'https://smarttask.duckdns.org', // your frontend domain here
+  origin: 'https://smarttask.duckdns.org', 
   credentials: true
 }));
 
@@ -33,6 +33,6 @@ app.get('/',(req,res)=>{
 })
 app.use('/api/auth', authRoutes);
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0',() => {
   console.log(`Server running on port ${PORT}`);
 });
