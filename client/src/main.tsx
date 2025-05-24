@@ -10,6 +10,8 @@ import Dashboard from "./Components/Pages/Dashboard";
 import PrivateLayout from "./Components/Layout/PrivateLayout";
 import TasksPage from "./Components/Pages/TaskPage";
 import AnalyticsPage from "./Components/Pages/AnalyticsPage";
+import CreateUserForm from "./Components/Pages/CreateUserForm";
+import UserList from "./Components/Pages/UsersList";
 
 // You can add other pages: Tasks, Analytics, etc.
 
@@ -55,6 +57,19 @@ if (root) {
           <Route path="NewTask" element={<NewTaskWrapper />} />
           <Route path="tasks" element={<TasksPage />} />
           <Route path="analytics" element={<AnalyticsPage />} />
+          <Route
+            path="createaccounts"
+            element={
+              <CreateUserForm
+                onSubmit={(formData) => {
+                  // handle form submission, e.g., send to API or log
+                  console.log("User created:", formData);
+                }}
+              />
+              
+            }
+          />
+          <Route path="userslist" element={<UserList refreshFlag={false} />} />
         </Route>
       </Routes>
     </BrowserRouter>

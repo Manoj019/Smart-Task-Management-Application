@@ -1,10 +1,21 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import {
-  BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell, LineChart, Line, CartesianGrid, Legend
-} from 'recharts';
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+  LineChart,
+  Line,
+  CartesianGrid,
+  Legend,
+} from "recharts";
 
 interface Task {
   _id: string;
@@ -14,16 +25,23 @@ interface Task {
   status: string;
 }
 
-const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff8042', '#0088FE', '#00C49F'];
+const COLORS = [
+  "#8884d8",
+  "#82ca9d",
+  "#ffc658",
+  "#ff8042",
+  "#0088FE",
+  "#00C49F",
+];
 
 export default function AnalyticsPage() {
   const navigate = useNavigate();
   const [tasks, setTasks] = useState<Task[]>([]);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (!token) {
-      navigate('/auth');
+      navigate("/auth");
     } else {
       fetchTasks(token);
     }
@@ -31,12 +49,12 @@ export default function AnalyticsPage() {
 
   const fetchTasks = async (token: string) => {
     try {
-      const res = await axios.get<Task[]>('http://localhost:5000/api/tasks', {
+      const res = await axios.get<Task[]>("http://localhost:5000/api/tasks", {
         headers: { Authorization: `Bearer ${token}` },
       });
       setTasks(res.data);
     } catch (err) {
-      console.error('Failed to fetch tasks:', err);
+      console.error("Failed to fetch tasks:", err);
     }
   };
 
@@ -63,13 +81,11 @@ export default function AnalyticsPage() {
   const last7Days = [...Array(7)].map((_, i) => {
     const date = new Date(today);
     date.setDate(date.getDate() - (6 - i));
-    const key = date.toISOString().split('T')[0];
+    const key = date.toISOString().split("T")[0];
     return {
       date: key,
       count: tasks.filter(
-        (t) =>
-          t.status === 'completed' &&
-          t.due_date.startsWith(key)
+        (t) => t.status === "completed" && t.due_date.startsWith(key)
       ).length,
     };
   });
@@ -77,7 +93,9 @@ export default function AnalyticsPage() {
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <header className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-800">Analytics Dashboard</h1>
+        <h1 className="text-3xl font-bold text-gray-800">
+          Analytics Dashboard
+        </h1>
         <p className="text-gray-600">Insights based on your tasks</p>
       </header>
 
@@ -97,7 +115,9 @@ export default function AnalyticsPage() {
 
         {/* Pie Chart: Task Status */}
         <section className="bg-white p-4 rounded shadow">
-          <h2 className="text-xl font-semibold mb-4">Task Status Distribution</h2>
+          <h2 className="text-xl font-semibold mb-4">
+            Task Status Distribution
+          </h2>
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
               <Pie
@@ -121,7 +141,9 @@ export default function AnalyticsPage() {
 
         {/* Line Chart: Completed Tasks in 7 Days */}
         <section className="bg-white p-4 rounded shadow md:col-span-2">
-          <h2 className="text-xl font-semibold mb-4">Tasks Completed in Last 7 Days</h2>
+          <h2 className="text-xl font-semibold mb-4">
+            Tasks Completed in Last 7 Days
+          </h2>
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={last7Days}>
               <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />

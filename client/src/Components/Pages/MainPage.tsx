@@ -31,12 +31,7 @@ export default function MainPage() {
           Stay on top of your deadlines and boost productivity with TaskMaster — the smart way to
           manage tasks and projects.
         </p>
-        <button
-          onClick={() => navigate('/auth')}
-          className="bg-blue-600 text-white px-8 py-3 rounded-md text-lg font-semibold hover:bg-blue-700 transition"
-        >
-          Get Started
-        </button>
+        
       </main>
 
       {/* Footer */}
