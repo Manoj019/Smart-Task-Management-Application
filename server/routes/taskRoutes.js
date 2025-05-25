@@ -15,9 +15,9 @@ router.post('/', protect, createTask);
 router.get('/', protect, getTasks);
 
 // PUT route to update a task by ID
-router.put('/:id', protect, updateTask); // 👈 add this
+router.put('/:id', protect, updateTask); // 
 
 // DELETE route to delete a task by ID
-router.delete('/:id', protect, deleteTask); // 👈 add this
+router.delete('/:id', protect, deleteTask); // 
 
 module.exports = router;

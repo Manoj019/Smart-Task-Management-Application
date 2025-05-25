@@ -4,11 +4,16 @@ const pool = require('../config/sql');
 exports.createTask = async (req, res) => {
   const { name, description, category, due_date, status } = req.body;
   const user_id = req.user.id;
+  
   try {
     const sql = `
       INSERT INTO tasks (name, description, category, due_date, status, user_id)
       VALUES (?, ?, ?, ?, ?, ?)
     `;
+    if (!user_id) {
+  return res.status(401).json({ error: 'Unauthorized - no user id found' });
+}
+
     const [result] = await pool.execute(sql, [
       name, description, category, due_date, status, user_id,
     ]);
@@ -81,3 +86,4 @@ exports.deleteTask = async (req, res) => {
     res.status(500).json({ error: 'Failed to delete task' });
   }
 };
+

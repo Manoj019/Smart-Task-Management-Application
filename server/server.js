@@ -5,7 +5,7 @@ const express = require('express');
 const cors = require('cors');
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
-
+const taskRoutes = require('./routes/taskRoutes');
 
 
 // Connect to the database
@@ -36,27 +36,34 @@ app.use(cors({
 app.use(express.json());
 
 // Routes
-const taskRoutes = require('./routes/taskRoutes');
-
 app.use('/api/tasks', taskRoutes);
-
 
 app.get('/',(req,res)=>{
     res.send('server is running super fast..........hii ')
 })
-app.use((err, req, res, next) => {
 
-    console.log(err);
-    
-    
-    if (err?.statusCode) {
-        return res.status(err.statusCode || 500).json(err);
-    }
-    return res.status(err?.statusCode || 500).json({ error: true, message: err.message });
-}) 
-
+app.get('/api/tasks', async (req, res) => {
+  try {
+    const tasks = await Task.find(); // or appropriate query
+    res.json(tasks);
+  } catch (error) {
+    console.error("Error fetching tasks:", error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok' });
+});
 
 app.use('/api/auth', authRoutes);
+
+// Serve frontend from ../client/dist
+app.use(express.static(path.join(__dirname, '../client/dist')));
+
+// Handle all unmatched routes with frontend index.html
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+});
 
 app.listen(PORT, '0.0.0.0',() => {
   console.log(`Server running on port ${PORT}`);
