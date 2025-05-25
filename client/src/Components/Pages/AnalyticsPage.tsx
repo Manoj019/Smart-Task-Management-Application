@@ -49,7 +49,7 @@ export default function AnalyticsPage() {
 
   const fetchTasks = async (token: string) => {
     try {
-      const res = await axios.get<Task[]>("http://localhost:5000/api/tasks", {
+      const res = await axios.get<Task[]>("http://localhost:5001/api/tasks", {
         headers: { Authorization: `Bearer ${token}` },
       });
       setTasks(res.data);

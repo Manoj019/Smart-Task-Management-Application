@@ -17,7 +17,7 @@ const UserList: React.FC<UserListProps> = ({ refreshFlag }) => {
   const fetchUsers = async () => {
     const token = localStorage.getItem("token");
     try {
-      const res = await fetch("http://localhost:5000/api/auth/createduser", {
+      const res = await fetch("http://localhost:5001/api/auth/createduser", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -42,7 +42,7 @@ const UserList: React.FC<UserListProps> = ({ refreshFlag }) => {
  const handleDelete = async (userId: string) => {
   const token = localStorage.getItem("token");
   try {
-    const res = await fetch(`http://localhost:5000/api/auth/delete/${userId}`, {
+    const res = await fetch(`http://localhost:5001/api/auth/delete/${userId}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,

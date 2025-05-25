@@ -1,25 +1,25 @@
 // server.js
+const dotenv = require('dotenv');
+dotenv.config();
 const express = require('express');
 const cors = require('cors');
-const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
 
-// Load environment variables
-dotenv.config();
+
 
 // Connect to the database
 connectDB();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 
 
 const allowedOrigins = [
-  'http://18.212.67.76',
-  'https://smarttask.duckdns.org', // Production frontend
+   // Production frontend
   'http://localhost:5173',     
-  'http://localhost:3000',    // Local development
+  'http://localhost:3000',  
+      // Local development
 ];
 
 // Middleware
@@ -44,6 +44,18 @@ app.use('/api/tasks', taskRoutes);
 app.get('/',(req,res)=>{
     res.send('server is running super fast..........hii ')
 })
+app.use((err, req, res, next) => {
+
+    console.log(err);
+    
+    
+    if (err?.statusCode) {
+        return res.status(err.statusCode || 500).json(err);
+    }
+    return res.status(err?.statusCode || 500).json({ error: true, message: err.message });
+}) 
+
+
 app.use('/api/auth', authRoutes);
 
 app.listen(PORT, '0.0.0.0',() => {

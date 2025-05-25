@@ -15,7 +15,7 @@ export default function TasksPage() {
   const fetchTasks = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await axios.get<Task[]>('http://localhost:5000/api/tasks', {
+      const res = await axios.get<Task[]>('http://localhost:5001/api/tasks', {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -33,7 +33,7 @@ export default function TasksPage() {
   const deleteTask = async (id: string) => {
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`http://localhost:5000/api/tasks/${id}`, {
+      await axios.delete(`http://localhost:5001/api/tasks/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setTasks(prev => prev.filter(t => t.id !== id));
@@ -47,7 +47,7 @@ export default function TasksPage() {
     try {
       const token = localStorage.getItem('token');
       await axios.put(
-        `http://localhost:5000/api/tasks/${editTask.id}`,
+        `http://localhost:5001/api/tasks/${editTask.id}`,
         editTask,
         { headers: { Authorization: `Bearer ${token}` } }
       );

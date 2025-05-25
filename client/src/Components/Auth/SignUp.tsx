@@ -14,7 +14,7 @@ export default function SignUp() {
   const navigate = useNavigate(); // get navigate function
 
   
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+// const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
  
 
 
@@ -25,7 +25,7 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      const res = await axios.post(`${BASE_URL}/api/auth/register`, form);
+      const res = await axios.post('http://localhost:5001/api/auth/register', form);
       localStorage.setItem('token', res.data.token);
       alert('Registration successful!');
       navigate('/login');  // redirect to login page here

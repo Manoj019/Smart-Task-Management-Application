@@ -38,7 +38,7 @@ export default function NewTask({ onTaskCreated }: NewTaskProps) {
 
     try {
       const token = localStorage.getItem('token');
-      await axios.post('http://localhost:5000/api/tasks', form, {
+      await axios.post('http://localhost:5001/api/tasks', form, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

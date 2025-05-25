@@ -14,7 +14,7 @@ export default function Login() {
   const navigate =useNavigate();
 
  
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+//const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -22,7 +22,7 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      const res = await axios.post(`${BASE_URL}/api/auth/login`, form);
+      const res = await axios.post('http://localhost:5001/api/auth/login', form);
       localStorage.setItem('token', res.data.token);
       alert('Login successful!');
         navigate('/Dashboard'); 

@@ -23,21 +23,36 @@ const registerUser = async (req, res) => {
 
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
+  console.log("Login attempt:", email);
 
   try {
     const user = await User.findOne({ email });
+    console.log("User found:", user);
     if (!user) return res.status(400).json({ message: 'Invalid credentials' });
 
+    // Check if password field exists and is a string
+    if (!user.password || typeof user.password !== 'string') {
+      console.error('User password missing or invalid:', user.password);
+      return res.status(500).json({ message: 'Server error' });
+    }
+
     const match = await bcrypt.compare(password, user.password);
+    console.log("Password match:", match);
     if (!match) return res.status(400).json({ message: 'Invalid credentials' });
 
-    
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
-    res.json({ user, token });
+    try {
+      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+      res.json({ user, token });
+    } catch (jwtErr) {
+      console.error('JWT Error:', jwtErr);
+      return res.status(500).json({ message: 'Token generation failed' });
+    }
   } catch (err) {
-    res.status(500).json({ message: 'Server error' });
-  }
+  console.error('Unexpected login error:', err);
+  res.status(500).json({ message: err.message, stack: err.stack });
+}
 };
+
 
 const getUserProfile = async (req, res) => {
   try {
