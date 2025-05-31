@@ -2,6 +2,8 @@ import { useState } from 'react';
 import type { FormEvent, ChangeEvent } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 interface TaskForm {
   name: string;
@@ -24,10 +26,11 @@ export default function NewTask({ onTaskCreated }: NewTaskProps) {
     status: '',
   });
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const navigate = useNavigate(); // <-- Hook called at top-level
-
-  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
@@ -42,17 +45,19 @@ export default function NewTask({ onTaskCreated }: NewTaskProps) {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      alert('Task created successfully!');
+      toast.success('Task created successfully!');
       setForm({ name: '', description: '', category: '', due_date: '', status: '' });
 
-      if (onTaskCreated) {
-        onTaskCreated(); // Notify parent to do something, like navigate or refresh tasks
-      } else {
-        navigate('/tasks'); // fallback navigation if no callback provided
-      }
+      setTimeout(() => {
+        if (onTaskCreated) {
+          onTaskCreated();
+        } else {
+          navigate('/tasks');
+        }
+      }, 1500); // short delay for the toast to show
     } catch (err) {
       console.error('Error creating task:', err);
-      alert('Failed to create task');
+      toast.error('Failed to create task');
     } finally {
       setLoading(false);
     }
@@ -60,6 +65,9 @@ export default function NewTask({ onTaskCreated }: NewTaskProps) {
 
   return (
     <div className="h-screen max-h-full flex items-center justify-center bg-gray-100 p-4 overflow-hidden">
+      {/* ✅ Toast container (should ideally be in root App) */}
+      <ToastContainer position="top-center" autoClose={2000} />
+
       <form
         onSubmit={handleSubmit}
         className="w-full max-w-md bg-white shadow-md rounded-lg p-6 space-y-4 overflow-auto max-h-[90vh]"
@@ -125,4 +133,3 @@ export default function NewTask({ onTaskCreated }: NewTaskProps) {
     </div>
   );
 }
-

@@ -49,7 +49,7 @@ app.get('/api/tasks', async (req, res) => {
   } catch (error) {
     console.error("Error fetching tasks:", error);
     res.status(500).json({ message: "Server Error" });
-  }
+ }
 });
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
@@ -57,13 +57,7 @@ app.get('/api/health', (req, res) => {
 
 app.use('/api/auth', authRoutes);
 
-// Serve frontend from ../client/dist
-app.use(express.static(path.join(__dirname, '../client/dist')));
 
-// Handle all unmatched routes with frontend index.html
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
-});
 
 app.listen(PORT, '0.0.0.0',() => {
   console.log(`Server running on port ${PORT}`);
